@@ -1,7 +1,7 @@
 .POSIX:
 
 JAVAC         = javac
-CFLAGS        = -Werror -d $(BUILDDIR)
+CFLAGS        = -Werror -d $(BUILDDIR) -cp $(SRCDIR)
 
 TARGET        = Lox.jar
 PREFIX        = /usr/local
@@ -10,14 +10,22 @@ BUILDDIR      = build
 
 PACKAGE       = com/craftinginterpreters/lox
 
-CLASSES       = $(PACKAGE)/Lox.class
+SRCFILES      = $(SRCDIR)/$(PACKAGE)/Lox.java \
+                $(SRCDIR)/$(PACKAGE)/TokenType.java \
+                $(SRCDIR)/$(PACKAGE)/Token.java \
+                $(SRCDIR)/$(PACKAGE)/Scanner.java
 
-$(BUILDDIR)/$(TARGET): $(BUILDDIR)/$(CLASSES)
-	jar cfe $@ $(PACKAGE)/Lox -C $(BUILDDIR) $(CLASSES)
+BUILDCLASSES  = $(BUILDDIR)/$(PACKAGE)/Lox.class \
+                $(BUILDDIR)/$(PACKAGE)/TokenType.class \
+                $(BUILDDIR)/$(PACKAGE)/Token.class \
+                $(BUILDDIR)/$(PACKAGE)/Scanner.class
 
-$(BUILDDIR)/$(PACKAGE)/Lox.class: $(SRCDIR)/$(PACKAGE)/Lox.java
-	$(JAVAC) $(CFLAGS) $(SRCDIR)/$(PACKAGE)/Lox.java
+$(BUILDDIR)/$(TARGET): $(BUILDCLASSES)
+	jar cfe $@ $(PACKAGE)/Lox -C $(BUILDDIR) .
+
+$(BUILDCLASSES): $(SRCFILES)
+	$(JAVAC) $(CFLAGS) $(SRCFILES)
 
 clean:
-	rm -rf $(BUILDDIR)/*
+	rm -rf $(BUILDDIR)
 
