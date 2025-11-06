@@ -8,24 +8,40 @@ PREFIX        = /usr/local
 SRCDIR        = src
 BUILDDIR      = build
 
-PACKAGE       = com/craftinginterpreters/lox
+PACKAGEPATH   = com/craftinginterpreters
+PACKAGELOX    = $(PACKAGEPATH)/lox
+PACKAGETOOL   = $(PACKAGEPATH)/tool
 
-SRCFILES      = $(SRCDIR)/$(PACKAGE)/Lox.java \
-                $(SRCDIR)/$(PACKAGE)/TokenType.java \
-                $(SRCDIR)/$(PACKAGE)/Token.java \
-                $(SRCDIR)/$(PACKAGE)/Scanner.java
+SRCFILES      = $(SRCDIR)/$(PACKAGELOX)/Lox.java \
+                $(SRCDIR)/$(PACKAGELOX)/TokenType.java \
+                $(SRCDIR)/$(PACKAGELOX)/Token.java \
+                $(SRCDIR)/$(PACKAGELOX)/Scanner.java \
+                $(SRCDIR)/$(PACKAGELOX)/Expr.java
 
-BUILDCLASSES  = $(BUILDDIR)/$(PACKAGE)/Lox.class \
-                $(BUILDDIR)/$(PACKAGE)/TokenType.class \
-                $(BUILDDIR)/$(PACKAGE)/Token.class \
-                $(BUILDDIR)/$(PACKAGE)/Scanner.class
+BUILDCLASSES  = $(BUILDDIR)/$(PACKAGELOX)/Lox.class \
+                $(BUILDDIR)/$(PACKAGELOX)/TokenType.class \
+                $(BUILDDIR)/$(PACKAGELOX)/Token.class \
+                $(BUILDDIR)/$(PACKAGELOX)/Scanner.class \
+                $(BUILDDIR)/$(PACKAGELOX)/Expr.class
 
 $(BUILDDIR)/$(TARGET): $(BUILDCLASSES)
-	jar cfe $@ $(PACKAGE)/Lox -C $(BUILDDIR) .
+	jar cfe $@ $(PACKAGELOX)/Lox -C $(BUILDDIR) .
 
 $(BUILDCLASSES): $(SRCFILES)
 	$(JAVAC) $(CFLAGS) $(SRCFILES)
 
+$(BUILDDIR)/$(PACKAGETOOL)/GenerateAst.class: $(SRCDIR)/$(PACKAGETOOL)/GenerateAst.java
+	$(JAVAC) $(CFLAGS) $(SRCDIR)/$(PACKAGETOOL)/GenerateAst.java
+
+$(SRCDIR)/$(PACKAGELOX)/Expr.java: $(BUILDDIR)/$(PACKAGETOOL)/GenerateAst.class
+	java -cp $(BUILDDIR) $(PACKAGETOOL)/GenerateAst $(SRCDIR)/$(PACKAGELOX)
+
+$(BUILDDIR)/$(PACKAGELOX)/AstPrinter.class: $(SRCDIR)/$(PACKAGELOX)/AstPrinter.java $(BUILDCLASSES)
+	$(JAVAC) $(CFLAGS) $(SRCDIR)/$(PACKAGELOX)/AstPrinter.java
+
+print_ast: $(BUILDDIR)/$(PACKAGELOX)/AstPrinter.class
+	java -cp $(BUILDDIR) $(PACKAGELOX)/AstPrinter
+
 clean:
-	rm -rf $(BUILDDIR)
+	rm -rf $(BUILDDIR) $(SRCDIR)/$(PACKAGELOX)/Expr.java
 
