@@ -16,13 +16,15 @@ SRCFILES      = $(SRCDIR)/$(PACKAGELOX)/Lox.java \
                 $(SRCDIR)/$(PACKAGELOX)/TokenType.java \
                 $(SRCDIR)/$(PACKAGELOX)/Token.java \
                 $(SRCDIR)/$(PACKAGELOX)/Scanner.java \
-                $(SRCDIR)/$(PACKAGELOX)/Expr.java
+                $(SRCDIR)/$(PACKAGELOX)/Expr.java \
+                $(SRCDIR)/$(PACKAGELOX)/Parser.java
 
 BUILDCLASSES  = $(BUILDDIR)/$(PACKAGELOX)/Lox.class \
                 $(BUILDDIR)/$(PACKAGELOX)/TokenType.class \
                 $(BUILDDIR)/$(PACKAGELOX)/Token.class \
                 $(BUILDDIR)/$(PACKAGELOX)/Scanner.class \
-                $(BUILDDIR)/$(PACKAGELOX)/Expr.class
+                $(BUILDDIR)/$(PACKAGELOX)/Expr.class \
+                $(BUILDDIR)/$(PACKAGELOX)/Parser.class
 
 $(BUILDDIR)/$(TARGET): $(BUILDCLASSES)
 	jar cfe $@ $(PACKAGELOX)/Lox -C $(BUILDDIR) .
