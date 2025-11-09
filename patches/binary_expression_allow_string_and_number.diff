@@ -1,0 +1,17 @@
+diff --git a/src/com/craftinginterpreters/lox/Interpreter.java b/src/com/craftinginterpreters/lox/Interpreter.java
+index 28e9367..ace1d43 100644
+--- a/src/com/craftinginterpreters/lox/Interpreter.java
++++ b/src/com/craftinginterpreters/lox/Interpreter.java
+@@ -245,7 +245,11 @@ class Interpreter implements Expr.Visitor<Object>,
+ 					return (String)left + (String)right;
+ 				}
+ 
+-				throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
++				if (left instanceof String && right instanceof Double) {
++					return (String)left + right.toString();
++				}
++
++				throw new RuntimeError(expr.operator, "Operands must be two numbers, two strings or a string and a number.");
+ 			case SLASH:
+ 				checkNumberOperands(expr.operator, left, right);
+ 				return (double)left / (double)right;
