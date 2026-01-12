@@ -25,7 +25,9 @@ SRCFILES      = $(SRCDIR)/$(PACKAGELOX)/Lox.java \
                 $(SRCDIR)/$(PACKAGELOX)/LoxCallable.java \
                 $(SRCDIR)/$(PACKAGELOX)/LoxFunction.java \
                 $(SRCDIR)/$(PACKAGELOX)/Return.java \
-                $(SRCDIR)/$(PACKAGELOX)/Resolver.java
+                $(SRCDIR)/$(PACKAGELOX)/Resolver.java \
+                $(SRCDIR)/$(PACKAGELOX)/LoxClass.java \
+                $(SRCDIR)/$(PACKAGELOX)/LoxInstance.java
 
 BUILDCLASSES  = $(BUILDDIR)/$(PACKAGELOX)/Lox.class \
                 $(BUILDDIR)/$(PACKAGELOX)/TokenType.class \
@@ -40,7 +42,9 @@ BUILDCLASSES  = $(BUILDDIR)/$(PACKAGELOX)/Lox.class \
                 $(BUILDDIR)/$(PACKAGELOX)/LoxCallable.class \
                 $(BUILDDIR)/$(PACKAGELOX)/LoxFunction.class \
                 $(BUILDDIR)/$(PACKAGELOX)/Return.class \
-                $(BUILDDIR)/$(PACKAGELOX)/Resolver.class
+                $(BUILDDIR)/$(PACKAGELOX)/Resolver.class \
+                $(BUILDDIR)/$(PACKAGELOX)/LoxClass.class \
+                $(BUILDDIR)/$(PACKAGELOX)/LoxInstance.class
 
 $(BUILDDIR)/$(TARGET): $(BUILDCLASSES)
 	jar cfe $@ $(PACKAGELOX)/Lox -C $(BUILDDIR) .
