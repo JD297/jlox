@@ -1,0 +1,48 @@
+diff --git a/src/com/craftinginterpreters/lox/Interpreter.java b/src/com/craftinginterpreters/lox/Interpreter.java
+index db0049e..f6f94b7 100644
+--- a/src/com/craftinginterpreters/lox/Interpreter.java
++++ b/src/com/craftinginterpreters/lox/Interpreter.java
+@@ -216,7 +216,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+ 		Map<String, LoxFunction> methods = new HashMap<>();
+ 
+ 		for (Stmt.Function method : stmt.methods) {
+-			LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals("init"));
++			LoxFunction function = new LoxFunction(method, environment, method.name.lexeme.equals(stmt.name.lexeme));
+ 
+ 			methods.put(method.name.lexeme, function);
+ 		}
+diff --git a/src/com/craftinginterpreters/lox/LoxClass.java b/src/com/craftinginterpreters/lox/LoxClass.java
+index 38eef7f..31b8aa1 100644
+--- a/src/com/craftinginterpreters/lox/LoxClass.java
++++ b/src/com/craftinginterpreters/lox/LoxClass.java
+@@ -30,7 +30,7 @@ class LoxClass implements LoxCallable {
+ 	public Object call(Interpreter interpreter, List<Object> arguments) {
+ 		LoxInstance instance = new LoxInstance(this);
+ 
+-		LoxFunction initializer = findMethod("init");
++		LoxFunction initializer = findMethod(this.name);
+ 
+ 		if (initializer != null) {
+ 			initializer.bind(instance).call(interpreter, arguments);
+@@ -41,7 +41,7 @@ class LoxClass implements LoxCallable {
+ 
+ 	@Override
+ 	public int arity() {
+-		LoxFunction initializer = findMethod("init");
++		LoxFunction initializer = findMethod(this.name);
+ 
+ 		if (initializer == null) {
+ 			return 0;
+diff --git a/src/com/craftinginterpreters/lox/Resolver.java b/src/com/craftinginterpreters/lox/Resolver.java
+index 7af8b71..98a68d4 100644
+--- a/src/com/craftinginterpreters/lox/Resolver.java
++++ b/src/com/craftinginterpreters/lox/Resolver.java
+@@ -102,7 +102,7 @@ class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void>  {
+ 		for (Stmt.Function method : stmt.methods) {
+ 			FunctionType declaration = FunctionType.METHOD;
+ 
+-			if (method.name.lexeme.equals("init")) {
++			if (method.name.lexeme.equals(stmt.name.lexeme)) {
+ 				declaration = FunctionType.INITIALIZER;
+ 			}
+ 
